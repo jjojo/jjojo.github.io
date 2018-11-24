@@ -15,6 +15,7 @@ let countDownInterval = null;
 
 const state = {
   started: false,
+  running: false,
   done: false,
   countDownStarted: false,
   totalPlayers: 0,
@@ -51,6 +52,7 @@ const start = (config) => {
 }
 
 const stop = () => {
+  return;
   console.log('time is up!');
   state.done = true;
   state.started = false;
@@ -120,7 +122,7 @@ const handleMessage = m => {
         startCountDown();
       }
 
-      // Only for admin view really
+      // Only for admin view really (but a new player needs to know current state)
       handleSendCurrentState();
     }
     return;
