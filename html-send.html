@@ -44,6 +44,15 @@
       flex-direction: column;
     }
 
+    .count-down {
+      display: none;
+      height: 100%;
+      background-size: cover;
+      flex-direction: column;
+    }
+
+
+
     #loading-page {
       display: none;
       height: 100%;
@@ -54,6 +63,14 @@
     #loading-page h3 {
       text-align: center;
       color: white;
+    }
+
+    #winner-page {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      background-size: cover;
     }
 
     #teamScore{
@@ -86,6 +103,38 @@
     #team-title {
       margin: 0;
       padding: 10px 0;
+      display: flex;
+      width: 100%;
+      text-align: center;
+      color: white;
+      justify-content: center;
+    }
+
+    #winner-team-title {
+      margin: 0;
+      padding: 10px 0;
+      font-size: 3rem;
+      display: flex;
+      width: 100%;
+      text-align: center;
+      color: white;
+      justify-content: center;
+    }
+
+    #action-team-title {
+      margin: 0;
+      padding: 10px 0;
+      display: flex;
+      width: 100%;
+      text-align: center;
+      color: white;
+      justify-content: center;
+    }
+
+    #count-team-title {
+      margin: 0;
+      padding: 10px 0;
+      font-size: 3rem;
       display: flex;
       width: 100%;
       text-align: center;
@@ -192,9 +241,6 @@
         try {
           data = JSON.parse(event.data);
           console.log(data)
-          window.changeHTML('teamScore', data[team].count)
-          window.changeHTML('team1-players', ` ${data['team1'].players}`)
-          window.changeHTML('team2-players', ` ${data['team2'].players}`)
           window.changeColor(data)
           window.startGame(data)
         } catch (e) {
@@ -203,33 +249,43 @@
       }
 
       window.startGame = (data) => {
-        // if (!data.started && !data.countDownStarted && !data.done) {
-        //   // Lobby / Waiting
-        //   window.hideAll()
-        //   var loadingPage = document.getElementById("loading-page");
-        //   loadingPage.style.display = "block";
-        // }
         const actionPage = document.getElementById("action-page");
+        var countDown = document.getElementById("count-down");
+        var timer = document.getElementById("timer");
+        var winnerPage = document.getElementById("winner-page");
 
         if (!data.started && data.countDownStarted) {
           // Do countdown with data.countDownTime
           window.hideAll()
-          var countDown = document.getElementById("count-down");
-          var timer = document.getElementById("timer");
+          
+          window.changeHTML('count-team-title', team === 'team1' ? 'BLUE' : 'RED')
+          countDown.style.backgroundImage = team === 'team1' ?  "Url('https://i.imgur.com/RBSA4ZW.png')" : "Url('https://i.imgur.com/BgfyFCk.png')"
           countDown.style.display = "block";
           timer.innerHTML = data.countDownTime
         }
 
-        if (data.started && actionPage.style.display !== 'flex') {
+        if (data.startGame && actionPage.style.display !== 'flex') {
           // Game is running
           window.hideAll()
+          window.changeHTML('action-team-title', team === 'team1' ? 'BLUE' : 'RED')
           actionPage.style.display = "flex";
           actionPage.style.backgroundImage = team === 'team1' ?  "Url('https://i.imgur.com/RBSA4ZW.png')" : "Url('https://i.imgur.com/BgfyFCk.png')"
           actionPage.classList.add("action-page");
         }
 
+        if (data.started) {
+          window.changeHTML('teamScore', data[team].count)
+          window.changeHTML('team1-players', ` ${data['team1'].players}`)
+          window.changeHTML('team2-players', ` ${data['team2'].players}`)
+        }
+
         if (data.done) {
           // Show winner with data.winner
+          window.hideAll()
+          winnerPage.style.display = "flex";
+          winnerPage.style.backgroundImage = data.winner === 'team1' ?  "Url('https://i.imgur.com/RBSA4ZW.png')" : "Url('https://i.imgur.com/BgfyFCk.png')"
+          window.changeHTML('winner-team-title', `${data.winner === 'team1' ? 'BLUE' : 'RED'} WON!`)
+
         }
       }
 
@@ -238,11 +294,13 @@
         var startPage = document.getElementById("start-page");
         var loadingPage = document.getElementById("loading-page");
         var countDown = document.getElementById("count-down");
+        var winnerPage = document.getElementById("winner-page");
 
         actionPage.style.display = 'none'
         startPage.style.display = 'none'
         loadingPage.style.display = 'none'
         countDown.style.display = 'none'
+        winnerPage.style.display = 'none'
       }
 
       window.increase = () => {
@@ -253,26 +311,11 @@
       window.pick = (pickedTeam) => {
         ws.send(JSON.stringify({joined: pickedTeam}));
         team = pickedTeam;
-        //window.toggleNextView();
         window.hideAll()
         var loadingPage = document.getElementById("loading-page");
         loadingPage.style.display = "block";
         loadingPage.style.backgroundImage = team === 'team1' ?  "Url('https://i.imgur.com/RBSA4ZW.png')" : "Url('https://i.imgur.com/BgfyFCk.png')"
         window.changeHTML('team-title', team === 'team1' ? 'BLUE' : 'RED')
-}
-
-      window.toggleNextView = () => {
-        var actionPage = document.getElementById("action-page");
-        var startPage = document.getElementById("start-page");
-        if (actionPage.style.display === "none") {
-          actionPage.style.display = "flex";
-          actionPage.style.backgroundImage = team === 'team1' ?  "Url('https://i.imgur.com/RBSA4ZW.png')" : "Url('https://i.imgur.com/BgfyFCk.png')"
-          actionPage.classList.add("action-page");
-          startPage.style.display = "none";
-        } else {
-          startPage.style.display = "block";
-          startPage.style.background = "green";
-        }
       }
 
       window.changeHTML = (elemntId, value) => {
@@ -286,11 +329,8 @@
         let dimmer = document.getElementById("dimmer");
         let progressBar = document.getElementById("progress-bar");
         progressBar.classList.add(team === 'team1' ? 'team-1-progressbar' : 'team-2-progressbar')
-        console.log('d',dimmer )
         const alpha = data.totalCount === 0 ? 1 : data[team].count / data.totalCount;
-        console.log('alpha', alpha )
         dimmer.style.backgroundColor = `rgba(0, 0, 0, ${1-alpha})`
-        console.log('dimmer.style.backgroundColor', dimmer.style)
       }
     });
 
@@ -310,15 +350,52 @@
 <div id="loading-page" style="display: none">
   <h1 id="team-title"></h1>
   <h3>WAITING FOR PLAYERS</h3>
+  <div class="stats">
+      <span>
+        <h3 id="blue-team" style="color:white">BLUE TEAM</h3>
+        <i id="team1-players" class="fas fa-users" style="color: white; font-size: 2rem;"></i>
+      </span>
+
+      <span>
+        <h3 id="red-team" style="color:white"> RED TEAM</h3>
+        <i id="team2-players" class="fas fa-users" style="color: white; font-size: 2rem;"></i>
+      </span>
+    </div>
 </div>
 
-  <div id="count-down" style="display: none">
-    <h1 id="team-title"></h1>
-    <h3 id="timer"></h3>
+<div id="count-down" class="count-down" style="display: none; font-size: 5rem; text-align: center">
+  <h1 id="count-team-title"></h1>
+  <h3 id="timer"></h3>
+  <div class="stats">
+      <span>
+        <h3 id="blue-team" style="color:white">BLUE TEAM</h3>
+        <i id="team1-players" class="fas fa-users" style="color: white; font-size: 2rem;"></i>
+      </span>
+
+      <span>
+        <h3 id="red-team" style="color:white"> RED TEAM</h3>
+        <i id="team2-players" class="fas fa-users" style="color: white; font-size: 2rem;"></i>
+      </span>
+    </div>
+</div>
+
+  <div id="winner-page" style="display: none; font-size: 1rem; text-align: center; color: white;">
+    <h1 id="winner-team-title" ></h1>
+    <div class="stats">
+        <span>
+          <h3 id="blue-team" style="color:white">BLUE TEAM</h3>
+          <i id="team1-players" class="fas fa-users" style="color: white; font-size: 2rem;"></i>
+        </span>
+  
+        <span>
+          <h3 id="red-team" style="color:white"> RED TEAM</h3>
+          <i id="team2-players" class="fas fa-users" style="color: white; font-size: 2rem;"></i>
+        </span>
+      </div>
   </div>
 
 <div id="action-page" style="display: none">
-  <h1 id="team-title"></h1>
+  <h1 id="action-team-title"></h1>
   <div id="dimmer" style="background-color: rgba(0, 0, 0, 0.5);" onclick="increase();">
       <div class="count" >
           <strong id="teamScore">0</strong>
