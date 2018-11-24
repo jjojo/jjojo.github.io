@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/jjojo/livehacks5#readme",
   "dependencies": {
+    "better-queue": "^3.8.10",
     "nodemon": "^1.18.6",
     "ws": "^6.1.2"
   }
