@@ -5,7 +5,7 @@ const EVENT_NAME = 'livehacksteam1';
 
 const ws = new WebSocket(`ws://stagecast.se/api/events/${EVENT_NAME}/ws?x-user-listener=1`);
 
-const GAME_TIME = (1000 * 60);
+const GAME_TIME = (1000 * 35);
 const COUNTDOWN_TIME = 5000;
 const PLAYERS_NEEDED = 5;
 
@@ -119,11 +119,6 @@ const handleMessage = m => {
   const { team1, team2, start: startEvent, joined } = m;
 
   if (joined) {
-    start();
-    setInterval(() => {
-      stop();
-    }, 2000);
-    return;
     if (joined === 'team1' || joined === 'team2') {
       state.totalPlayers++;
       state[joined].players++;
