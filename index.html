@@ -210,6 +210,9 @@
           if (data.done && data.winner) {
             const ele = document.getElementById('test');
             ele.style = '';
+            ele.classList.remove('red-winner');
+            ele.classList.remove('blue-winner');
+
             if (data.winner === 'team2') {
               ele.classList.add('red-winner');
             } else {
