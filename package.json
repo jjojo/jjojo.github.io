@@ -1,0 +1,23 @@
+{
+  "name": "livehacks5",
+  "version": "1.0.0",
+  "description": "Repository for Stagecast live hacks 5",
+  "main": "html-receive.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jjojo/livehacks5.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jjojo/livehacks5/issues"
+  },
+  "homepage": "https://github.com/jjojo/livehacks5#readme",
+  "dependencies": {
+    "midi": "^0.9.5",
+    "ws": "^6.1.2"
+  }
+}

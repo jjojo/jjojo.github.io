@@ -1,9 +1,9 @@
 const WebSocket = require('ws');
-const midi = require('midi');
+//const midi = require('midi');
 
-const eventName = 'my_unique_event';
-const input = new midi.input();
-const output = new midi.output();
+const eventName = 'livehacksteam1';
+//const input = new midi.input();
+//const output = new midi.output();
 
 // console.log('Inputs:');
 // for (var i = 0; i < input.getPortCount(); i++) {
@@ -17,11 +17,12 @@ const output = new midi.output();
 // }
 // console.log();
 
-output.openPort(0);
+// output.openPort(0);
 
 const ws = new WebSocket(`ws://stagecast.se/api/events/${eventName}/ws?x-user-listener=1`);
 
 const handleMessage = m => {
+  console.log('m:', m)
 	if (!m.msg) {
 		return;
 	}

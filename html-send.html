@@ -1,29 +1,54 @@
-<style>
-	body {
-		font-size:64px;
-		background-color:white;
-		color:black;
-	}
-</style> 
-<script type="text/javascript">
-	const eventName = 'my_unique_event';
-	window.addEventListener('load', () => {
-		const ws = new WebSocket(`ws://stagecast.se/api/events/${eventName}/ws?x-user-listener=1`);
-		var lx, ly, lr;
-		if (window.DeviceOrientationEvent) {
-			window.addEventListener('deviceorientation', event => {
-				let r = Math.round(event.alpha);
-				let x = Math.round(event.gamma);
-				let y = Math.round(event.beta);
-				if (r != lr || y!= ly || x != lx) {
-					lx = x;
-					ly = y;
-					lr = r;
-					document.body.innerHTML = `alpha: ${r}<br>gamma: ${x}<br> beta: ${y}`;
-					let data = JSON.stringify({rawacc:[r, x, y]});
-					ws.send(data);
-				}
-			}, true);
-		}
-	});
-</script>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>stagecast team 1 event</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+  <script src="main.js"></script>
+</head>
+<body>
+
+  <style>
+    body {
+      font-size:64px;
+      background-color:white;
+      color:black;
+    }
+  </style> 
+  <script type="text/javascript">
+   
+   const eventName = 'livehacksteam1';
+   
+   window.addEventListener('load', () => {
+      const ws = new WebSocket(`ws://stagecast.se/api/events/${eventName}/ws?x-user-listener=1`);
+      var lx, ly, lr;
+      if (window.DeviceOrientationEvent) {
+        window.addEventListener('deviceorientation', event => {
+          let r = Math.round(event.alpha);
+          let x = Math.round(event.gamma);
+          let y = Math.round(event.beta);
+          if (r != lr || y!= ly || x != lx) {
+            lx = x;
+            ly = y;
+            lr = r;
+            document.body.innerHTML = `alpha: ${r}<br>gamma: ${x}<br> beta: ${y}`;
+            let data = JSON.stringify({rawacc:[r, x, y]});
+            ws.send(data);
+          }
+        }, true);
+      }
+    });
+
+    increaseTeam1 = () => {
+      ws.send(1);
+    })
+  </script>
+  
+  <button onclick="increaseTeam1()">Team 1</button>
+  <button onclick="">Team 2</button>
+
+
+</body>
+</html>
