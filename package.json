@@ -4,7 +4,7 @@
   "description": "Repository for Stagecast live hacks 5",
   "main": "html-receive.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon html-receive.js"
   },
   "repository": {
     "type": "git",
@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/jjojo/livehacks5#readme",
   "dependencies": {
-    "midi": "^0.9.5",
+    "nodemon": "^1.18.6",
     "ws": "^6.1.2"
   }
 }
