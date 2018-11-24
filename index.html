@@ -192,6 +192,9 @@
         const { data: dJson } = event;
         const data = JSON.parse(dJson);
         console.log('data', data);
+        if (data && data.reset) {
+          setBackground({ redPercent: 50, bluePercent: 50 });
+        }
         if (data && data.totalPlayers) {
           document.getElementById('players').innerHTML = "" + data.totalPlayers;
           if (data.started) {
@@ -207,7 +210,7 @@
           if (data.done && data.winner) {
             const ele = document.getElementById('test');
             ele.style = '';
-            if (data.winner === 'team1') {
+            if (data.winner === 'team2') {
               ele.classList.add('red-winner');
             } else {
               ele.classList.add('blue-winner');
