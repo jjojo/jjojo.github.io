@@ -5,43 +5,106 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>stagecast team 1 event</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
-  <script src="main.js"></script>
+  <!-- <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+  <script src="main.js"></script> -->
+
+
 </head>
 <body>
 
   <style>
-    body {
-      font-size:64px;
-      background-color:white;
-      color:black;
+    body, html {
+      box-sizing: border-box;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
     }
-  </style> 
+
+    #team1Score{
+      display: flex;
+      height: 50%;
+      justify-content: center;
+      align-items: center;
+      font-size: 7rem;
+      color: white;
+    }
+
+    #team2Score{
+      display: flex;
+      height: 50%;
+      justify-content: center;
+      align-items: center;
+      font-size: 7rem;
+      color: white;
+    }
+
+    .team1 {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      background-color: #65CBC9;
+      height: 50%;
+    }
+
+    .team2 {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      background-color: red;
+      height: 50%;
+    }
+  </style>
   <script type="text/javascript">
    
    const eventName = 'livehacksteam1';
    
    window.addEventListener('load', () => {
       const ws = new WebSocket(`ws://stagecast.se/api/events/${eventName}/ws?x-user-listener=1`);
+      ws.send(JSON.stringify({start:true}))
+      let data;
+      ws.onmessage = function (event) {
+        console.log('data', event.data )
+        try {
+          data = JSON.parse(event.data);
+          window.changeHTML(data)
+        } catch (e) {
+          console.error(e);
+        }
+      };
 
-      window.increaseTeam1 = () => {
+      increaseTeamOne = () => {
         document.getElementById('message').innerHTML = "test click"
         ws.send(JSON.stringify({team1:1}));
       }
 
-      window.increaseTeam1 = () => {
+      window.increaseTeamTwo = () => {
         document.getElementById('message').innerHTML = "test click"
-        ws.send(JSON.stringify({increaseTeam1: () =}));
+        ws.send(JSON.stringify({team2:1}));
+      }
+
+      window.changeHTML = (data) => {
+        if (data.team1){
+          document.getElementById('team1Score').innerHTML = data.team1.count
+        }
+
+        if (data.team1){
+          document.getElementById('team2Score').innerHTML = data.team2.count
+        }
       }
 
     });
 
-    
   </script>
-  <p id="message">test</p>
-  <button onclick="increaseTeam1()">Team 1</button>
-  <button onclick="">Team 2</button>
 
+<div class="team1 count" onclick="increaseTeamOne()">
+    <h1>Team 1</h1>
+    <strong id="team1Score"></strong>
+</div>
+<div class="team2 count" onclick="increaseTeamTwo()">
+    <h1>Team 2</h1>
+    <strong id="team2Score"></strong>
+</div>
 
 </body>
 </html>
