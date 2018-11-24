@@ -26,36 +26,10 @@ const handleMessage = m => {
 	if (!m.msg) {
 		return;
 	}
-
-	// console.log('m',m);
-
-	const rawx = m.msg.rawacc[0];
-	const rawy = m.msg.rawacc[1];
-	const rawr = m.msg.rawacc[2];
-
-	let x = rawx.map(0, 360, 0, 127);
-	let y = rawy.map(-90, 90, 0, 127);
-	let r = rawr.map(-180, 180, 0, 127);
-
-	x = Math.round(x);
-	y = Math.round(y);
-	r = Math.round(r);
-
-	console.log(`_x: ${rawx}, _y: ${rawy}, _r: ${rawr}`);
-	console.log(`x: ${x}, y: ${y}, r: ${r}`);
 };
 
 ws.on('open', () => {
   console.log('connected', )
-	// setInterval(() => {
-	// 	handleMessage({msg: {rawacc: [0,-90,-180]}})
-	// 	setTimeout(() => {
-	// 		handleMessage({msg: {rawacc: [180,0,0]}})
-	// 		setTimeout(() => {
-	// 			handleMessage({msg: {rawacc: [360,90,180]}})
-	// 		},500);
-	// 	},500);
-	// },1500);
 });
 
 ws.on('message', data => {
