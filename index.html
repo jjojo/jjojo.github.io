@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>stagecast team 1 event</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+
+  <style>
+    html {
+      height: 100%;
+    }
+    body {
+      font-size:64px;
+      background-color:white;
+      color:black;
+      height: 100%;
+      margin: 0;
+    }
+    #test {
+      height: 100%;
+      display: grid;
+    }
+  </style>
+ 
+  <div id="test">
+    <button onclick="start()">Start!</button>
+    <div id="players">0</div>
+  </div>
+
+  <script type="text/javascript">
+
+    var GColor = function (r, g, b) {
+      r = (typeof r === 'undefined') ? 0 : r;
+      g = (typeof g === 'undefined') ? 0 : g;
+      b = (typeof b === 'undefined') ? 0 : b;
+      return { r: r, g: g, b: b };
+    };
+    var createColorRange = function (c1, c2) {
+      var colorList = [], tmpColor;
+      for (var i = 0; i < 255; i++) {
+        tmpColor = new GColor();
+        tmpColor.r = c1.r + ((i * (c2.r - c1.r)) / 255);
+        tmpColor.g = c1.g + ((i * (c2.g - c1.g)) / 255);
+        tmpColor.b = c1.b + ((i * (c2.b - c1.b)) / 255);
+        colorList.push(tmpColor);
+      }
+      return colorList;
+    }
+
+    var red = new GColor(255, 0, 0);
+    var blue = new GColor(0, 0, 255);
+    var range = createColorRange(red, blue);
+    console.log('range', range);
+
+    function setBackground(pointer) {
+      var currentColor = range[pointer];
+      document.getElementById("test").style.backgroundColor = "rgb(" + currentColor.r + "," + currentColor.g + "," + currentColor.b + ")";
+    }
+
+    // Set initial bg
+    setBackground(Math.floor(255 / 2));
+
+    const eventName = 'livehacksteam1';
+
+    window.addEventListener('load', () => {
+      const ws = new WebSocket(`ws://stagecast.se/api/events/${eventName}/ws?x-user-listener=1`);
+
+      window.start = () => {
+        ws.send(JSON.stringify({ start: true }));
+      }
+
+      ws.onmessage = function (event) {
+        const { data: dJson } = event;
+        const data = JSON.parse(dJson);
+        console.log('data', data);
+        if (data && data.totalPlayers) {
+          document.getElementById('players').innerHTML = "" + data.totalPlayers;
+          if (data.started) {
+            const teamOneVal = data.totalCount === 0 ? 1 : data['team1'].count / data.totalCount;
+            let t1 = Math.ceil(255 * teamOneVal);
+            if (t1 > 254) {
+              t1 = 254;
+            }
+            if (t1 < 1) {
+              t1 = 1;
+            }
+            console.log('t1', t1);
+
+            setBackground(t1);
+            console.log('teamOneVal', t1);
+          }
+        }
+      }
+    });
+
+
+  </script>
+
+</body>
+
+</html>

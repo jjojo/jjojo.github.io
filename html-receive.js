@@ -81,11 +81,14 @@ const handleMessage = m => {
 
 			// Only for admin view really
 			handleSendCurrentState();
+			if (!state.started) {
+				// start(); // TODO: Remove
+			}
 		}
 		return;
 	}
 	
-	// Starting event on connect.
+	// Starting event triggered from admin-view
 	if (startEvent && !state.started) {
 		console.log('start event');
 		start();
@@ -134,6 +137,6 @@ ws.on('message', data => {
 });
 
 process.on('SIGINT', () => {
-	output.closePort();
+	clearInterval(startInterval);
 	process.exit(2);
 });
