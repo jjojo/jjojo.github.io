@@ -21,91 +21,130 @@
       padding: 0;
     }
 
-    #team1Score{
+    #start-page {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .action-page {
+      display: none;
+      height: 100%;
+      background-size: cover;
+    }
+
+    #teamScore{
       display: flex;
-      height: 50%;
+      height: 100%;
       justify-content: center;
       align-items: center;
       font-size: 7rem;
       color: white;
     }
 
-    #team2Score{
+    .pick-team-background {
       display: flex;
+      flex-direction: column;
+      width: 100%;
+      background-size: cover;
       height: 50%;
-      justify-content: center;
-      align-items: center;
-      font-size: 7rem;
-      color: white;
+    }
+
+    #dimmer {
+      width: 100%;
+      height: 100%;
+      position: absolute;
     }
 
     .team1 {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      background-color: #65CBC9;
-      height: 50%;
+      background-image: url('./resurs1.png');
     }
 
     .team2 {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      background-color: red;
-      height: 50%;
+      background-image: url('./resurs2.png');
     }
   </style>
   <script type="text/javascript">
    
    const eventName = 'livehacksteam1';
+   let team = '';
    
    window.addEventListener('load', () => {
       const ws = new WebSocket(`ws://stagecast.se/api/events/${eventName}/ws?x-user-listener=1`);
-      ws.onopen = function (event) {
-        ws.send(JSON.stringify({start: true}));
-      };
       let data;
       ws.onmessage = function (event) {
-        console.log('data', event.data )
+        console.log('event', event )
+        console.log('data', JSON.parse(event.data))
+
+        console.log('team', team )
         try {
           data = JSON.parse(event.data);
-          window.changeHTML(data)
+          console.log(data)
+          window.changeHTML('teamScore', data[team].count)
         } catch (e) {
           console.error(e);
         }
       }
 
-      window.increase = (team) => {
-        if (team === 'team1'){
-          ws.send(JSON.stringify({team1:1}));
-        }
-        if (team === 'team2'){
-          ws.send(JSON.stringify({team2:1}));
+      window.increase = () => {
+        console.log('increse clicked!', )
+        ws.send(JSON.stringify({[team]:1}));
+        
+      }
+
+      window.pick = (pickedTeam) => {
+        ws.send(JSON.stringify({joined: pickedTeam}));
+        team = pickedTeam;
+        window.toggleNextView();
+        window.changeHTML('team-title', team)
+      }
+
+      window.toggleNextView = () => {
+        var actionPage = document.getElementById("action-page");
+        var startPage = document.getElementById("start-page");
+        if (actionPage.style.display === "none") {
+          actionPage.style.display = "flex";
+          actionPage.style.backgroundImage = team === 'team1' ?  "Url('./playscreen1.png')" : "Url('./playscreen2.png')"
+          actionPage.classList.add("action-page");
+          startPage.style.display = "none";
+        } else {
+          startPage.style.display = "block";
+          startPage.style.background = "green";
         }
       }
 
-
-      window.changeHTML = (data) => {
-        if (data.team1){
-          document.getElementById('team1Score').innerHTML = data.team1.count
-        }
-        if (data.team1){
-          document.getElementById('team2Score').innerHTML = data.team2.count
-        }
+      window.changeHTML = (elemntId, value) => {
+        document.getElementById(elemntId).innerHTML = value
+        // if (data.team1){
+        //   document.getElementById('team1Score').innerHTML = data.team1.count
+        // }
+        // if (data.team1){
+        //   document.getElementById('team2Score').innerHTML = data.team2.count
+        // }
       }
 
     });
 
   </script>
 
-<div class="team1 count" onclick="increase('team1')">
-    <h1>Team 1</h1>
-    <strong id="team1Score"></strong>
+<div id="start-page">
+  <div class="team1 pick-team-background" onclick="pick('team1')">
+      <h1>Team 1</h1>
+  </div>
+  <div class="team2 pick-team-background" onclick="pick('team2')">
+      <h1>Team 2</h1>
+  </div>
 </div>
-<div class="team2 count" onclick="increase('team2')">
-    <h1>Team 2</h1>
-    <strong id="team2Score"></strong>
-</div>
+  
+
+<div class="" id="action-page" style="display: none">
+  <div id="dimmer" style="background-color: rgba(0, 0, 0, 0.5);" onclick="increase()"></div>
+    <div class="count" >
+        <h1 id="team-title"></h1>
+        <strong id="teamScore"></strong>
+    </div>
+  </div>
+
 
 </body>
 </html>
