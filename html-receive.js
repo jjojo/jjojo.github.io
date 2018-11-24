@@ -14,12 +14,15 @@ let startInterval = null;
 const state = {
 	started: false,
 	done: false,
-	players: 0,
+	totalPlayers: 0,
+	totalCount: 0,
 	team1: {
-		count: 0
+		count: 0,
+		players: 0,
 	},
 	team2: {
-		count: 0
+		count: 0,
+		players: 0,
 	},
 	timeLeft: GAME_TIME,
 	gameTime: GAME_TIME,
@@ -37,6 +40,9 @@ const start = (config) => {
 
 	// start interval
 	startInterval = setInterval(checkTimeIsUp, 1000);
+
+	// Send state to started
+	handleSendCurrentState();
 }
 
 const stop = () => {
@@ -59,8 +65,6 @@ const checkTimeIsUp = () => {
 	const now = new Date();
 	const diff = now - currentTime;
 	state.timeLeft = GAME_TIME - diff;
-	console.log('diff', diff);
-	console.log('state', state);
 	if (diff >= GAME_TIME) {
 		stop();
 	}
@@ -71,9 +75,13 @@ const handleMessage = m => {
 	const { team1, team2, start: startEvent, joined } = m;
 
 	if (joined) {
-		state.players++;
-		// Only for admin view really
-		handleSendCurrentState();
+		if (joined === 'team1' || joined === 'team2') {
+			state.totalPlayers++;
+			state[joined].players++;
+
+			// Only for admin view really
+			handleSendCurrentState();
+		}
 		return;
 	}
 	
@@ -102,6 +110,7 @@ const handleMessage = m => {
 const handleAddClick = (prop) => {
 	const now = new Date();
 	state[prop].count = state[prop].count + 1;
+	state.totalCount = state.team1.count + state.team2.count;
 	handleSendCurrentState();
 };
 
