@@ -15,7 +15,7 @@ let countDownInterval = null;
 
 const state = {
   started: false,
-  running: false,
+  startGame: false,
   done: false,
   countDownStarted: false,
   totalPlayers: 0,
@@ -41,18 +41,22 @@ const q = new Queue(function (prop, cb) {
 
 // Initialize everything
 const start = (config) => {
-  state.started = true;
+  state.startGame = true;
   currentTime = new Date();
+
+  // Send startGame
+  handleSendCurrentState();
 
   // start interval
   startInterval = setInterval(checkTimeIsUp, 1000);
 
   // Send state to started
+  state.startGame = false;
+  state.started = true;
   handleSendCurrentState();
 }
 
 const stop = () => {
-  return;
   console.log('time is up!');
   state.done = true;
   state.started = false;
@@ -106,6 +110,7 @@ const startCountDown = () => {
   }, 1000);
 
   // Send initial
+  state.countDownTime = Math.ceil((COUNTDOWN_TIME) / 1000);
   handleSendCurrentState();
 };
 
