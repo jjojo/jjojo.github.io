@@ -12,6 +12,62 @@
 <body>
 
   <style>
+    @-webkit-keyframes red-winner-key {
+      0%   { background-color: #fff; }
+      49% { background-color: #fff; }
+      50% { background-color: red; }
+      99% { background-color: red; }
+      100% { background-color: #fff; }
+    }
+    @-moz-keyframes red-winner-key {
+      0%   { background-color: #fff; }
+      49% { background-color: #fff; }
+      50% { background-color: red; }
+      99% { background-color: red; }
+      100% { background-color: #fff; }
+    }
+    @keyframes red-winner-key {
+      0%   { background-color: #fff; }
+      49% { background-color: #fff; }
+      50% { background-color: red; }
+      99% { background-color: red; }
+      100% { background-color: #fff; }
+    }
+
+    @-webkit-keyframes blue-winner-key {
+      0%   { background-color: #fff; }
+      49% { background-color: #fff; }
+      50% { background-color: blue; }
+      99% { background-color: blue; }
+      100% { background-color: #fff; }
+    }
+    @-moz-keyframes blue-winner-key {
+      0%   { background-color: #fff; }
+      49% { background-color: #fff; }
+      50% { background-color: blue; }
+      99% { background-color: blue; }
+      100% { background-color: #fff; }
+    }
+    @keyframes blue-winner-key {
+      0%   { background-color: #fff; }
+      49% { background-color: #fff; }
+      50% { background-color: blue; }
+      99% { background-color: blue; }
+      100% { background-color: #fff; }
+    }
+
+    .blue-winner {
+      -webkit-animation: blue-winner-key 1s infinite;
+      -moz-animation:    blue-winner-key 1s infinite;
+      animation:         blue-winner-key 1s infinite;
+    }
+
+    .red-winner {
+      -webkit-animation: red-winner-key 1s infinite;
+      -moz-animation:    red-winner-key 1s infinite;
+      animation:         red-winner-key 1s infinite;
+    }
+
     html {
       height: 100%;
     }
@@ -60,14 +116,14 @@
     }
 
     .flat {
-      color: #fff;
-      background-color: #6496c8;
+      display: none;
+      color: #0a0a0a;
+      background-image: linear-gradient(to right, #ECE9E6 0%, #FFFFFF 51%, #ECE9E6 100%);
       border: none;
       border-radius: 15px;
-      box-shadow: 0 10px #27496d;
     }
     .flat:hover {
-      background-color: #417cb8
+      background-position: right center;
     }
     .flat:active {
       background-color: #417cb8;
@@ -112,13 +168,16 @@
     var range = createColorRange(red, blue);
     console.log('range', range);
 
-    function setBackground(pointer) {
-      var currentColor = range[pointer];
-      document.getElementById("test").style.backgroundColor = "rgb(" + currentColor.r + "," + currentColor.g + "," + currentColor.b + ")";
+    function setBackground(isRed, percent) {
+      let color = '';
+      const red = 'rgba(255, 0, 0, 1)';
+      const blue = 'rgba(0, 0, 255, 1)';
+      if (isRed) {
+        document.getElementById("test").style.background = "linear-gradient(180deg, " + red + " " + percent + "%, " + blue + " 100%)";
+      } else {
+        document.getElementById("test").style.background = "linear-gradient(180deg, " + blue + " " + percent + "%, " + red + " 100%)";
+      }
     }
-
-    // Set initial bg
-    setBackground(Math.floor(255 / 2));
 
     const eventName = 'livehacksteam1';
 
@@ -139,20 +198,37 @@
           document.getElementById('players').innerHTML = "" + data.totalPlayers;
           if (data.started) {
             const teamOneVal = data.totalCount === 0 ? 1 : data['team1'].count / data.totalCount;
-            let t1 = Math.ceil(255 * teamOneVal);
-            if (t1 > 254) {
-              t1 = 254;
-            }
-            if (t1 < 1) {
-              t1 = 1;
-            }
+            let t1 = Math.ceil(100 * teamOneVal);
+            let t2 = 100 - t1;
             console.log('t1', t1);
+            console.log('t2', t2);
 
-            setBackground(t1);
-            console.log('teamOneVal', t1);
+            if (t1 > 50) {
+              setBackground(true, t1);
+            } else {
+              setBackground(false, t2);
+            }
+
+          }
+
+          if (data.done && data.winner) {
+            const ele = document.getElementById('test');
+            ele.style = '';
+            if (data.winner === 'team1') {
+              ele.classList.add('red-winner');
+            } else {
+              ele.classList.add('blue-winner');
+            }
+            setTimeout(() => {
+              const ele = document.getElementById('test');
+              ele.classList.remove('red-winner');
+              ele.classList.remove('blue-winner');
+            }, 10000);
           }
         }
       }
+
+      setBackground(true, 50);
     });
 
 
