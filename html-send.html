@@ -73,21 +73,20 @@
         }
       };
 
-      increaseTeamOne = () => {
-        document.getElementById('message').innerHTML = "test click"
-        ws.send(JSON.stringify({team1:1}));
+      window.increase = (team) => {
+        if (team === 'team1'){
+          ws.send(JSON.stringify({team1:1}));
+        }
+        if (team === 'team2'){
+          ws.send(JSON.stringify({team2:1}));
+        }
       }
 
-      window.increaseTeamTwo = () => {
-        document.getElementById('message').innerHTML = "test click"
-        ws.send(JSON.stringify({team2:1}));
-      }
 
       window.changeHTML = (data) => {
         if (data.team1){
           document.getElementById('team1Score').innerHTML = data.team1.count
         }
-
         if (data.team1){
           document.getElementById('team2Score').innerHTML = data.team2.count
         }
@@ -97,11 +96,11 @@
 
   </script>
 
-<div class="team1 count" onclick="increaseTeamOne()">
+<div class="team1 count" onclick="increase('team1')">
     <h1>Team 1</h1>
     <strong id="team1Score"></strong>
 </div>
-<div class="team2 count" onclick="increaseTeamTwo()">
+<div class="team2 count" onclick="increase('team2')">
     <h1>Team 2</h1>
     <strong id="team2Score"></strong>
 </div>
