@@ -31,13 +31,17 @@
       }
 
       ws.onmessage = function(event) {
-        console.log('event', event);
+        const { data: dJson } = event;
+        const data = JSON.parse(dJson);
+        console.log('data', data);
+        document.getElementById('players').innerHTML = ""+data.totalPlayers;
       }
     });
 
 
   </script>
   <button onclick="start()">Start!</button>
+  <div id="players">0</div>
 
 
 </body>
