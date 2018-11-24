@@ -23,12 +23,11 @@
     }
     #test {
       height: 100%;
-      display: grid;
     }
   </style>
  
   <div id="test">
-    <button onclick="start()">Start!</button>
+    <button id="startButton" onclick="start()">Start!</button>
     <div id="players">0</div>
   </div>
 
@@ -72,6 +71,8 @@
 
       window.start = () => {
         ws.send(JSON.stringify({ start: true }));
+        document.getElementById('startButton').style.display = 'none';
+        document.getElementById('players').style.display = 'none';
       }
 
       ws.onmessage = function (event) {
