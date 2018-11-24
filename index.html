@@ -6,6 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>stagecast team 1 event</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600" rel="stylesheet">
 </head>
 
 <body>
@@ -16,19 +17,74 @@
     }
     body {
       font-size:64px;
-      background-color:white;
-      color:black;
+      color:white;
       height: 100%;
       margin: 0;
+      font-family: 'Open Sans', sans-serif;
     }
+
     #test {
       height: 100%;
+      display: grid;
+      grid-template-columns: 100px auto 100px;
+    }
+
+    #content {
+      grid-column: 2 / span 1;
+      margin: 0 auto;
+      display: grid;
+      grid-template-rows: 1fr 1fr;
+    }
+
+    #players {
+      color: #fff;
+    }
+
+    .players {
+      text-align: center;
+    }
+
+    button {
+      display: inline-block;
+      margin: 0 10px 0 0;
+      padding: 15px 45px;
+      font-size: 48px;
+      font-family: 'Open Sans', sans-serif;
+      line-height: 1.8;
+      appearance: none;
+      box-shadow: none;
+      border-radius: 0;
+    }
+    button:focus {
+      outline: none
+    }
+
+    .flat {
+      color: #fff;
+      background-color: #6496c8;
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 10px #27496d;
+    }
+    .flat:hover {
+      background-color: #417cb8
+    }
+    .flat:active {
+      background-color: #417cb8;
+      box-shadow: 0 5px #27496d;
+      transform: translateY(5px);
     }
   </style>
  
   <div id="test">
-    <button id="startButton" onclick="start()">Start!</button>
-    <div id="players">0</div>
+    <div id="content">
+      <div class="players">
+        <div id="players">0</div>
+      </div>
+      <div class="button">
+        <button class="flat" id="startButton" onclick="start()">Start!</button>
+      </div>
+    </div>
   </div>
 
   <script type="text/javascript">
@@ -67,7 +123,7 @@
     const eventName = 'livehacksteam1';
 
     window.addEventListener('load', () => {
-      const ws = new WebSocket(`ws://stagecast.se/api/events/${eventName}/ws?x-user-listener=1`);
+      const ws = new WebSocket(`wss://stagecast.se/api/events/${eventName}/ws?x-user-listener=1`);
 
       window.start = () => {
         ws.send(JSON.stringify({ start: true }));
