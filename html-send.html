@@ -61,7 +61,9 @@
    
    window.addEventListener('load', () => {
       const ws = new WebSocket(`ws://stagecast.se/api/events/${eventName}/ws?x-user-listener=1`);
-      ws.send(JSON.stringify({start:true}))
+      ws.onopen = function (event) {
+        ws.send(JSON.stringify({start: true}));
+      };
       let data;
       ws.onmessage = function (event) {
         console.log('data', event.data )
@@ -71,7 +73,7 @@
         } catch (e) {
           console.error(e);
         }
-      };
+      }
 
       window.increase = (team) => {
         if (team === 'team1'){
