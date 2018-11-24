@@ -15,6 +15,7 @@ let countDownInterval = null;
 
 const state = {
   started: false,
+  startGame: false,
   done: false,
   countDownStarted: false,
   totalPlayers: 0,
@@ -40,13 +41,18 @@ const q = new Queue(function (prop, cb) {
 
 // Initialize everything
 const start = (config) => {
-  state.started = true;
+  state.startGame = true;
   currentTime = new Date();
+
+  // Send startGame
+  handleSendCurrentState();
 
   // start interval
   startInterval = setInterval(checkTimeIsUp, 1000);
 
   // Send state to started
+  state.startGame = false;
+  state.started = true;
   handleSendCurrentState();
 }
 
@@ -104,6 +110,7 @@ const startCountDown = () => {
   }, 1000);
 
   // Send initial
+  state.countDownTime = Math.ceil((COUNTDOWN_TIME) / 1000);
   handleSendCurrentState();
 };
 
@@ -120,7 +127,7 @@ const handleMessage = m => {
         startCountDown();
       }
 
-      // Only for admin view really
+      // Only for admin view really (but a new player needs to know current state)
       handleSendCurrentState();
     }
     return;

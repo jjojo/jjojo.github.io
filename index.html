@@ -97,6 +97,7 @@
     }
 
     .players {
+      display: none;
       text-align: center;
     }
 
@@ -168,15 +169,12 @@
     var range = createColorRange(red, blue);
     console.log('range', range);
 
-    function setBackground(isRed, percent) {
+    function setBackground({bluePercent, redPercent}) {
       let color = '';
       const red = 'rgba(255, 0, 0, 1)';
       const blue = 'rgba(0, 0, 255, 1)';
-      if (isRed) {
-        document.getElementById("test").style.background = "linear-gradient(180deg, " + red + " " + percent + "%, " + blue + " 100%)";
-      } else {
-        document.getElementById("test").style.background = "linear-gradient(180deg, " + blue + " " + percent + "%, " + red + " 100%)";
-      }
+
+      document.getElementById("test").style.background = "linear-gradient(180deg, " + blue + " " + redPercent + "%, " + red + " " + redPercent + "%)";
     }
 
     const eventName = 'livehacksteam1';
@@ -203,12 +201,7 @@
             console.log('t1', t1);
             console.log('t2', t2);
 
-            if (t1 > 50) {
-              setBackground(true, t1);
-            } else {
-              setBackground(false, t2);
-            }
-
+            setBackground({bluePercent: t2, redPercent: t1});
           }
 
           if (data.done && data.winner) {
@@ -228,7 +221,7 @@
         }
       }
 
-      setBackground(true, 50);
+      setBackground({redPercent: 50, bluePercent: 50});
     });
 
 
