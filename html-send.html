@@ -23,29 +23,32 @@
    
    window.addEventListener('load', () => {
       const ws = new WebSocket(`ws://stagecast.se/api/events/${eventName}/ws?x-user-listener=1`);
-      var lx, ly, lr;
-      if (window.DeviceOrientationEvent) {
-        window.addEventListener('deviceorientation', event => {
-          let r = Math.round(event.alpha);
-          let x = Math.round(event.gamma);
-          let y = Math.round(event.beta);
-          if (r != lr || y!= ly || x != lx) {
-            lx = x;
-            ly = y;
-            lr = r;
-            document.body.innerHTML = `alpha: ${r}<br>gamma: ${x}<br> beta: ${y}`;
-            let data = JSON.stringify({rawacc:[r, x, y]});
-            ws.send(data);
-          }
-        }, true);
+      // var lx, ly, lr;
+      // if (window.DeviceOrientationEvent) {
+      //   window.addEventListener('deviceorientation', event => {
+      //     let r = Math.round(event.alpha);
+      //     let x = Math.round(event.gamma);
+      //     let y = Math.round(event.beta);
+      //     if (r != lr || y!= ly || x != lx) {
+      //       lx = x;
+      //       ly = y;
+      //       lr = r;
+      //       document.body.innerHTML = `alpha: ${r}<br>gamma: ${x}<br> beta: ${y}`;
+      //       let data = JSON.stringify({rawacc:[r, x, y]});
+      //       ws.send(data);
+      //     }
+      //   }, true);
+      // }
+
+      window.increaseTeam1 = () => {
+        document.getElementById('message').innerHTML = "test click"
+        ws.send(JSON.stringify({team1:1}));
       }
     });
 
-    increaseTeam1 = () => {
-      ws.send(1);
-    })
+    
   </script>
-  
+  <p id="message">test</p>
   <button onclick="increaseTeam1()">Team 1</button>
   <button onclick="">Team 2</button>
 

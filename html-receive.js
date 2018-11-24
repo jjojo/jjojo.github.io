@@ -43,13 +43,10 @@ const handleMessage = m => {
 
 	console.log(`_x: ${rawx}, _y: ${rawy}, _r: ${rawr}`);
 	console.log(`x: ${x}, y: ${y}, r: ${r}`);
-
-	output.sendMessage([0xB0, 41, x]);
-	output.sendMessage([0xB0, 42, y]);
-	output.sendMessage([0xB0, 43, r]);
 };
 
 ws.on('open', () => {
+  console.log('connected', )
 	// setInterval(() => {
 	// 	handleMessage({msg: {rawacc: [0,-90,-180]}})
 	// 	setTimeout(() => {
@@ -62,6 +59,7 @@ ws.on('open', () => {
 });
 
 ws.on('message', data => {
+  console.log('data', data )
 	try {
 		data = JSON.parse(data);
 		handleMessage(data);
