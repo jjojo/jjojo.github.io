@@ -119,6 +119,11 @@ const handleMessage = m => {
   const { team1, team2, start: startEvent, joined } = m;
 
   if (joined) {
+    start();
+    setInterval(() => {
+      stop();
+    }, 2000);
+    return;
     if (joined === 'team1' || joined === 'team2') {
       state.totalPlayers++;
       state[joined].players++;
@@ -164,10 +169,12 @@ const handleAddClick = (prop) => {
 
 const handleSendCurrentState = () => {
   console.log('sending', state);
-  ws.send(JSON.stringify(state));
+  ws.send(JSON.stringify(Object.assign({ reset: true }, state)));
 };
 
 ws.on('open', () => {
+  // Tell admin page to reset
+  ws.send(JSON.stringify(state));
   console.log('connected');
 });
 
